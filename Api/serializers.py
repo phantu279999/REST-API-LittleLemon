@@ -6,7 +6,7 @@ class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = models.Category
 		fields = [
-			'id'
+			'id',
 			'title',
 			'slug'
 		]
@@ -22,14 +22,15 @@ class MenuItemSerializer(serializers.ModelSerializer):
 			'title',
 			'price',
 			'featured',
-			'category'
+			'category',
+			'category_id',
 		]
 
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = models.User
-		fields = ['id', 'username', 'email', 'first_name', 'last_name']
+		fields = ['id', 'username', 'email']
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -38,16 +39,17 @@ class CartSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 
 
-class OrderSerializer(serializers.ModelSerializer):
-	class Meta:
-
-		model = models.Order
-		fields = "__all__"
-
-
 class OrderItemSerializer(serializers.ModelSerializer):
 	class Meta:
-
 		model = models.OrderItem
 		fields = "__all__"
 
+
+class OrderSerializer(serializers.ModelSerializer):
+	orderitem = OrderItemSerializer(many=True, read_only=True, source='order')
+
+	class Meta:
+		model = models.Order
+		fields = [
+			'id', 'user', 'delivery_crew', 'status', 'date', 'total', 'orderitem'
+		]
